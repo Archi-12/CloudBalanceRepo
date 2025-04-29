@@ -1,0 +1,223 @@
+.dashboard-conatiner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.step-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+
+  /* Fixed height + scrolling */
+  height: 85vh;
+  overflow-y: auto;
+}
+
+.step-heading {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.step-para {
+  font-size: 1rem;
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+}
+
+.step-list {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  color: #374151;
+  font-size: 1rem;
+  line-height: 1.75rem;
+}
+
+.step-list li {
+  margin-bottom: 1.5rem;
+}
+
+.step-link {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+/* Code block container */
+.step-box {
+  position: relative;
+  background-color: #f9fafb;
+  border: 1px solid #2563eb;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-family: "Courier New", Courier, monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  height: 220px; /* fixed height */
+  overflow-y: auto;
+}
+
+/* Positioning for Copy button inside step-box */
+.step-box .copy-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: #1d4ed8;
+  color: rgb(85, 100, 165);
+  border: none;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+/* Adjust other CopyBox instances (e.g., role name / ARN) if needed */
+.mt-2 {
+  margin-top: 0.5rem;
+  border: 1px solid blue;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  position: relative;
+  padding: 1rem;
+  width: 280px;
+  height: max-content;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.step-image {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.step-buttons-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.step-buttons {
+  padding: 0.75rem 1.5rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.step-buttons:hover {
+  background-color: #1d4ed8;
+}
+.input-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap; /* Optional: handles smaller screens */
+}
+
+.step-input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  flex: 1; /* makes them evenly spaced */
+  min-width: 200px;
+}
+/* Ensure your form container does not stretch full height */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Wrap the step content and the buttons */
+.step-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* This positions the buttons right below the content */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto; /* pushes buttons to bottom of the form content, not page */
+  padding-top: 1.5rem;
+}
+
+/* Optional button styling */
+.button-group button {
+  padding: 0.75rem 1.5rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-group button:hover {
+  background-color: #1d4ed8;
+}
+
+.onboarding-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.onboarding-main {
+  display: flex;
+  flex: 1;
+}
+
+.onboarding-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: rgb(241, 244, 246);
+}
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+/* Left aligned cancel */
+.cancel-button {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+  background-color: #dc2626;
+}
+
+/* Right aligned buttons */
+.right-buttons {
+  display: flex;
+  gap: 10px;
+}

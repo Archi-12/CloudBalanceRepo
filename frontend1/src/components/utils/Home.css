@@ -1,0 +1,181 @@
+/* General reset & base styles */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+  background-color: white;
+  color: #1e293b;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  height: 80px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.logo {
+  width: 180px;
+  cursor: pointer;
+}
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-icons h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #1e293b;
+}
+
+.nav-icons button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nav-icons button:hover {
+  background-color: #d1d5db;
+  color: black;
+}
+
+.user-icon-container {
+  position: relative;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: white;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 200px;
+}
+
+.user-dropdown p {
+  margin: 0.5rem 0;
+  color: #1e293b;
+  font-size: 0.9rem;
+}
+
+.user-dropdown button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.user-dropdown button:hover {
+  background-color: #d1d5db;
+  color: black;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #ffffff;
+  color: black;
+  padding: 1rem;
+  min-height: 100vh; /* ensures full height */
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background-color color 0.2s ease;
+}
+
+.sidebar li:hover {
+  background-color: #a6aeb7;
+}
+
+.sidebar .icon {
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+  color: black;
+}
+
+.sidebar-link {
+  color: black;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.sidebar-link.active {
+  color: black;
+  font-weight: 600;
+}
+
+/* Main content area */
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-left: 1px solid #e2e8f0;
+}
+
+/* Footer */
+.footer {
+  background-color: white;
+  color: #475569;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.875rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.footer .icon {
+  margin: 0 0.25rem;
+  color: #1e293b;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+.footer .icon:hover {
+  color: #0f172a;
+}
