@@ -25,4 +25,13 @@ public class RdsDto {
         this.region = region;
         this.status = status;
     }
-}
+
+        public RdsDto(String instanceId) {
+            this.instanceId = instanceId;
+        }
+
+
+
+
+    }
+

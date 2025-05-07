@@ -27,32 +27,40 @@ const Aws = () => {
   const [resourceData, setResourceData] = useState([]);
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.user);
+  console.log(user);
 
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        let res;
-        if (user?.role === "ADMIN" || user?.role === "READ_ONLY") {
-          res = await api.get("/accounts");
-        } else if (user?.role === "CUSTOMER" && user?.email) {
-          res = await api.get(`/users/${user.email}`);
-        }
-
-        if (res?.data?.data?.length > 0) {
-          const firstAccount = res.data.data[0];
+        if (user.role === "ADMIN" || user.role === "READ_ONLY") {
+          const res = await api.get("/accounts");
           setAccounts(res.data.data);
-          setSelectedAccount(firstAccount);
-          setSelectedService("EC2");
+        } else if (user.role === "CUSTOMER") {
+          const res = await api.get(`/users/${user.id}`);
+          setAccounts(res.data.data);
         }
       } catch (err) {
-        toast.error("Failed to load accounts");
+        const msg = err.response?.data?.message || "Failed to load accounts.";
+        const code = err.response?.status;
+        toast.error(`Error ${code || ""}: ${msg}`);
+        setAccounts([]);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (user?.role) {
+    if (
+      user &&
+      user.role &&
+      (user.role === "ADMIN" ||
+        user.role === "READ_ONLY" ||
+        (user.role === "CUSTOMER" && user.id))
+    ) {
       fetchAccounts();
     }
   }, [user]);
+
+  console.log("Accounts:", accounts);
 
   useEffect(() => {
     if (selectedAccount && selectedService) {

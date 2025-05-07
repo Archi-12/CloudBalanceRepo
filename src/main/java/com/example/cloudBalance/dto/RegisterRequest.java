@@ -35,6 +35,7 @@ import java.util.Set;
 @Setter
 @Data
 public class RegisterRequest {
+    private Long id;
     private String email;
     private String password;
     private Role roles;

@@ -39,11 +39,12 @@ export default function UserForm({ onSubmit }) {
   useEffect(() => {
     if (editUserData) {
       const prefillData = {
+        id: editUserData.id,
         name: editUserData.username,
         email: editUserData.email,
-        role: editUserData.roles?.name || "",
+        role: editUserData.roles?.name,
         accountNumbers: editUserData.accountNumbers || [],
-        password: "", // password blank rehta edit ke time
+        password: editUserData.password,
       };
       setFormData(prefillData);
       setIsEditMode(true);
@@ -57,7 +58,16 @@ export default function UserForm({ onSubmit }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => {
+      const updatedFormData = { ...prev, [name]: value };
+
+      if (name === "role" && value.toUpperCase() !== "CUSTOMER") {
+        updatedFormData.accountNumbers = [];
+      }
+
+      return updatedFormData;
+    });
   };
 
   const handleCheckboxChange = (e) => {
@@ -78,9 +88,10 @@ export default function UserForm({ onSubmit }) {
 
     const roleValue = (formData.role || "").toUpperCase();
     const userPayload = {
+      id: formData.id,
       email: formData.email,
-      password: formData.password,
       username: formData.name,
+      password: formData.password,
       roles: {
         name: roleValue,
       },
@@ -90,11 +101,9 @@ export default function UserForm({ onSubmit }) {
 
     try {
       if (isEditMode) {
-        // UPDATE existing user
-        await api.put(`/users/${editUserData.email}`, userPayload);
+        await api.put(`/users/${editUserData.id}`, userPayload);
         toast.success("User updated successfully");
       } else {
-        // CREATE new user
         await api.post("/users", userPayload);
         toast.success("User created successfully");
       }
@@ -102,14 +111,15 @@ export default function UserForm({ onSubmit }) {
       navigate("/user-management");
       onSubmit && onSubmit(userPayload);
     } catch (error) {
-      if (error.response?.status === 409) {
-        toast.error("User already exists");
+      const status = error.response?.status;
+      const message =
+        error.response?.data?.message || "Unexpected error occurred";
+
+      if (status) {
+        toast.error(`Error ${status}: ${message}`);
+      } else {
+        toast.error("Network or server error. Please try again later.");
       }
-      if (error.response?.status === 400) {
-        toast.error("Invalid input data");
-      }
-      toast.error("Error adding/updating user:", error.response?.data.status);
-      toast.error("Failed to process user");
     }
   };
 

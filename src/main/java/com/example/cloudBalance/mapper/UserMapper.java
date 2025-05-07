@@ -46,6 +46,7 @@ public class UserMapper {
             return null;
         }
         RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setId(user.getId());
         registerRequest.setEmail(user.getEmail());
         registerRequest.setPassword(user.getPassword());
         registerRequest.setRoles(user.getRoles());
@@ -67,6 +68,7 @@ public class UserMapper {
             return null;
         }
         User user = new User();
+        user.setId(registerRequest.getId());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(registerRequest.getPassword());
         user.setRoles(registerRequest.getRoles());

@@ -16,8 +16,8 @@ const ProtectedRoute = ({ children }) => {
     const fetchUser = async () => {
       try {
         const response = await api.get("/users/me");
-        const { email, username, roles } = response.data.data;
-        dispatch(setUser({ email, username, role: roles }));
+        const { id, email, username, roles } = response.data.data;
+        dispatch(setUser({ id, email, username, role: roles }));
         setLoading(false);
       } catch (error) {
         console.error("Error fetching user in Home:", error);

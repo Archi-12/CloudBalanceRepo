@@ -21,15 +21,24 @@ export default function Login() {
         email: information.email,
         password: information.pwd,
       });
-      const { token, email, username, role } = response.data.data;
+
+      const { token } = response.data.data;
       localStorage.setItem("token", token);
-      dispatch(setUser({ email, username, role }));
+      //dispatch(setUser({ email, username, role }));
 
       navigate("/home", { replace: true });
       toast.success("Login successful!");
       setInformation({ email: "", pwd: "" });
     } catch (error) {
-      toast.error("Login failed: " + error.response?.data?.message);
+      const status = error.response?.status;
+      const message =
+        error.response?.data?.message || "Unexpected error occurred";
+
+      if (status) {
+        toast.error(`Error ${status}: ${message}`);
+      } else {
+        toast.error("Network or server error. Please try again later.");
+      }
     }
   };
 

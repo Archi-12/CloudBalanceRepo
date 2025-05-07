@@ -1,5 +1,6 @@
 package com.example.cloudBalance.service;
 
+import com.example.cloudBalance.authComp.JwtService;
 import com.example.cloudBalance.dto.RegisterRequest;
 import com.example.cloudBalance.dto.UserResponse;
 import com.example.cloudBalance.entity.Accounts;
@@ -14,6 +15,7 @@ import com.example.cloudBalance.repository.RoleRepository;
 import com.example.cloudBalance.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +38,16 @@ public class UserService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public List<RegisterRequest> getAllUsers() {
+    @Autowired
+    private JwtService jwtTokenProvider;
+
+    public List<RegisterRequest> getAllUsers(Authentication authentication) {
+        String currentUserEmail = authentication.getName(); // Get the logged-in user's email
         List<User> users = userRepository.findAll();
-        return users.stream().map(UserMapper::toDto).collect(Collectors.toList());
+        return users.stream()
+                .filter(user -> !user.getEmail().equals(currentUserEmail)) // Exclude the current user
+                .map(UserMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -53,6 +62,7 @@ public class UserService {
         }
 
         User user = new User();
+        user.setId(registerRequest.getId());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setUsername(registerRequest.getUsername());
@@ -71,6 +81,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         UserResponse dto = new UserResponse();
+        dto.setId(savedUser.getId());
         dto.setEmail(savedUser.getEmail());
         dto.setUsername(savedUser.getUsername());
         dto.setRoles(savedUser.getRoles().getName().toString());
@@ -83,9 +94,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateUser(String email, RegisterRequest updatedRequest) {
-        User existingUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFound("User not found with email: " + email));
+    public UserResponse updateUser(Long id, RegisterRequest updatedRequest) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("User not found with id: " + id));
 
         // Update username
         existingUser.setUsername(updatedRequest.getUsername());
@@ -118,6 +129,7 @@ public class UserService {
         User savedUser = userRepository.save(existingUser);
 
         UserResponse response = new UserResponse();
+        response.setId(savedUser.getId());
         response.setEmail(savedUser.getEmail());
         response.setUsername(savedUser.getUsername());
         response.setRoles(savedUser.getRoles().getName().toString());
@@ -126,12 +138,22 @@ public class UserService {
         return response;
     }
 
-    public Set<Accounts> getUserAccounts(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFound("User not found with email: " + email));
-
+    public Set<Accounts> getUserAccounts(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("User not found with id: " + id));
         return user.getAccount();
     }
+
+    public String switchToUser(Long id, Authentication authentication) {
+        // Validate the customer exists
+        User customer = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Customer not found"));
+        if (!customer.getRoles().getName().equals("CUSTOMER")) {
+            throw new UnauthorizedException("Cannot switch to a non-customer user");
+        }
+        return jwtTokenProvider.generateToken(customer.getEmail(), customer.getRoles().getName().name());
+    }
+
 }
 
 

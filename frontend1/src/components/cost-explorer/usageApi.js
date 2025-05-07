@@ -1,4 +1,7 @@
 import api from "../config/AxiosConfig";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 const monthMap = {
   Jan: "01",
@@ -15,19 +18,32 @@ const monthMap = {
   Dec: "12",
 };
 
-export const fetchAccounts = async (user) => {
-  try {
-    if (user?.role === "ADMIN" || user?.role === "READ_ONLY") {
-      const res = await api.get("/accounts");
-      return res.data.data;
-    } else if (user?.role === "CUSTOMER" && user?.email) {
-      const res = await api.get(`/users/${user.email}`);
-      return res.data.data;
-    }
-  } catch (err) {
-    console.error("Failed to load accounts", err);
-    return [];
-  }
+export const useFetchAccounts = () => {
+  const user = useSelector((state) => state.user);
+  const [accounts, setAccounts] = useState([]);
+
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        if (user?.role === "ADMIN" || user?.role === "READ_ONLY") {
+          const res = await api.get("/accounts");
+          setAccounts(res.data.data);
+        } else if (user?.role === "CUSTOMER" && user?.email && user?.id) {
+          const res = await api.get(`/users/${user.id}`);
+          setAccounts(res.data.data);
+        }
+      } catch (err) {
+        const msg = err.response?.data?.message || "Failed to load accounts.";
+        const code = err.response?.status;
+        toast.error(`Error ${code || ""}: ${msg}`);
+        setAccounts([]);
+      }
+    };
+
+    if (user?.role) fetchAccounts();
+  }, [user]);
+
+  return { accounts };
 };
 
 export const fetchGroupByOptions = async () => {
@@ -35,7 +51,10 @@ export const fetchGroupByOptions = async () => {
     const res = await api.get("/snowflake-columns/display-names");
     return res.data.data;
   } catch (err) {
-    console.error("Failed to load group by options", err);
+    const msg =
+      err.response?.data?.message || "Failed to load group by options.";
+    const code = err.response?.status;
+    toast.error(`Error ${code || ""}: ${msg}`);
     return [];
   }
 };
@@ -71,37 +90,46 @@ export const fetchUsageData = async (
 
     const rawData = res.data.data || [];
 
-    // ✅ Group by monthYear
     const groupedByMonth = {};
     rawData.forEach((item) => {
-      const month = item.monthYear || monthYear; // fallback if not present
+      const month = item.monthYear || monthYear;
       if (!groupedByMonth[month]) groupedByMonth[month] = [];
       groupedByMonth[month].push(item);
     });
 
-    // ✅ Process each group
     const finalData = [];
 
     for (const month in groupedByMonth) {
-      const sorted = groupedByMonth[month].sort((a, b) => b.amount - a.amount);
+      const sorted = groupedByMonth[month].sort(
+        (a, b) => b.totalUsageAmount - a.totalUsageAmount
+      );
       const top5 = sorted.slice(0, 5);
       const others = sorted.slice(5);
-      const othersAmount = others.reduce(
-        (sum, item) => sum + (item.amount || 0),
-        0
-      );
+      const othersAmount = others.reduce((sum, item) => {
+        return (sum += item.totalUsageAmount);
+      }, 0);
+
+      console.log("othersAmount", othersAmount);
 
       finalData.push(
         ...top5,
         ...(others.length > 0
-          ? [{ usage: "Others", amount: othersAmount, monthYear: month }]
+          ? [
+              {
+                groupByValue: "others",
+                totalUsageAmount: othersAmount,
+                monthYear: month,
+              },
+            ]
           : [])
       );
     }
 
     return finalData;
   } catch (err) {
-    console.error("Failed to load usage data", err);
+    const msg = err.response?.data?.message || "Failed to load usage data.";
+    const code = err.response?.status;
+    toast.error(`Error ${code || ""}: ${msg}`);
     return [];
   }
 };

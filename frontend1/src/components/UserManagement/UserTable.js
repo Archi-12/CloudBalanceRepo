@@ -18,6 +18,7 @@ export default function UserTable({ users, onEdit }) {
       <table className="user-table">
         <thead>
           <tr>
+            <th>Id</th>
             <th>Name</th>
             <th>Email ID</th>
             <th>Roles</th>
@@ -27,9 +28,11 @@ export default function UserTable({ users, onEdit }) {
         </thead>
         <tbody>
           {users.map((u, index) => {
-            const [Name] = u.username.split(" ");
+            const [Name] = (u.username || "").split(" ");
+
             return (
               <tr key={index}>
+                <td>{u.id}</td>
                 <td>{Name}</td>
                 <td>{u.email}</td>
                 <td>{u.roles?.name || "N/A"}</td>

@@ -8,6 +8,7 @@ import { SidebarItems } from "../utils/SideBarItems";
 import UserTable from "./UserTable";
 import api from "../config/AxiosConfig";
 import "./UserManagement.css";
+import { toast } from "react-toastify";
 
 function UserManagementPage() {
   const user = useSelector((state) => state.user);
@@ -19,7 +20,7 @@ function UserManagementPage() {
       const res = await api.get("/users");
       setUsers(res.data.data);
     } catch (err) {
-      console.error("Error fetching users:", err);
+      toast.error("Error fetching users:", err);
     }
   };
 

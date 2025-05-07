@@ -70,7 +70,6 @@ const Onboarding = () => {
     };
 
     try {
-      //console.log("Submitting user:", payload);
       const response = await api.post("/accounts", payload);
 
       if (response.status === 201) {
@@ -78,10 +77,15 @@ const Onboarding = () => {
         toast.success("Account data submitted successfully!");
       }
     } catch (error) {
-      toast.error(
-        "An error occurred during submission.",
-        error.response?.error
-      );
+      const status = error.response?.status;
+      const message =
+        error.response?.data?.message || "Unexpected error occurred";
+
+      if (status) {
+        toast.error(`Error ${status}: ${message}`);
+      } else {
+        toast.error("Network or server error. Please try again later.");
+      }
     }
   };
 

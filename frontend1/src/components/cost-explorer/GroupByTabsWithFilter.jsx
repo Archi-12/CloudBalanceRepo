@@ -5,7 +5,11 @@ import Navbar from "../utils/Navbar";
 import Sidebar from "../utils/Sidebar";
 import { SidebarItems } from "../utils/SideBarItems";
 import { useSelector } from "react-redux";
-import { fetchAccounts, fetchGroupByOptions, fetchUsageData } from "./usageApi";
+import {
+  useFetchAccounts,
+  fetchGroupByOptions,
+  fetchUsageData,
+} from "./usageApi";
 import ChartDisplay from "./ChartDisplay";
 import LineChartDisplay from "/home/archi/Cloudbalance/frontend/src/components/cost-explorer/ LineChartDisplay.jsx";
 import DataTable from "./DataTable";
@@ -14,13 +18,13 @@ import GroupByTabs from "./GroupByTabs";
 import MonthAccountSelector from "./MonthAccountSelector";
 
 const GroupByWithSidebarFilter = () => {
-  const user1 = useSelector((state) => state.user);
+  const user1 = useSelector((state) => state.user); // Still used for sidebar
+  const { accounts } = useFetchAccounts(); // Hook properly used here
 
   const [groupByOptions, setGroupByOptions] = useState([]);
   const [selectedGroupBy, setSelectedGroupBy] = useState("Service");
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const [startMonth, setStartMonth] = useState("");
-  const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [usageData, setUsageData] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({});
@@ -31,27 +35,24 @@ const GroupByWithSidebarFilter = () => {
   const [initializing, setInitializing] = useState(true);
   const [shouldAutoFetch, setShouldAutoFetch] = useState(false);
 
-  // First useEffect: load accounts and groupBy
+  // Load groupBy options and initialize selected account/month when accounts are available
   useEffect(() => {
     const init = async () => {
-      const accountsData = await fetchAccounts(user1);
       const options = await fetchGroupByOptions();
-      setAccounts(accountsData);
       setGroupByOptions(options);
 
-      if (accountsData.length > 0) {
-        setSelectedAccount(accountsData[0]);
+      if (accounts.length > 0) {
+        setSelectedAccount(accounts[0]);
         setStartMonth("Apr 2025");
-        console.log("Start month: ");
         setSelectedGroupBy("Service");
         setShouldAutoFetch(true);
       }
       setInitializing(false);
     };
     init();
-  }, [user1]);
+  }, [accounts]);
 
-  // Second useEffect: when selectedAccount + startMonth + groupBy are ready
+  // Auto-fetch usage data when all selections are set
   useEffect(() => {
     const autoFetchUsageData = async () => {
       if (shouldAutoFetch && selectedAccount && startMonth && selectedGroupBy) {
@@ -90,7 +91,6 @@ const GroupByWithSidebarFilter = () => {
     <Box sx={{ backgroundColor: "#f8fafc", p: 2, borderRadius: 2 }}>
       <Navbar />
       <Box display="flex" height="calc(100vh - 64px)">
-        {" "}
         <Box
           width="250px"
           bgcolor="#f5f5f5"

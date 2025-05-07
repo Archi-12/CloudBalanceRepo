@@ -1,5 +1,12 @@
 export const FormConfig = [
   {
+    name: "id",
+    label: "Id",
+    type: "text",
+    placeholder: "Id",
+    required: true,
+  },
+  {
     name: "name",
     label: "Name",
     type: "text",

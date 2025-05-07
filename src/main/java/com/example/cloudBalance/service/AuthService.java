@@ -53,8 +53,18 @@ public class AuthService {
 
         String roleName = user.getRoles().getName().name();
         String token = jwtService.generateToken(user.getEmail(), roleName);
+        if(user.getLastLoginAt() == null) {
+            user.setLastLoginAt(LocalDateTime.now());
+            userRepository.save(user);
+        } else {
+            LocalDateTime lastLoginAt = user.getLastLoginAt();
+            if (lastLoginAt != null) {
+                user.setLastLoginAt(LocalDateTime.now());
+                userRepository.save(user);
+            }
+        }
 
-        AuthResponse authResponse = new AuthResponse(token, user.getEmail(), roleName, user.getUsername());
+        AuthResponse authResponse = new AuthResponse(token, user.getEmail());
 
         ApiResponse<AuthResponse> response = new ApiResponse<>(200, "Login successful", authResponse);
         return ResponseEntity.ok(response);
@@ -72,12 +82,6 @@ public class AuthService {
         String email = jwtService.extractEmail(token);
 
         if (jwtService.isTokenValid(token,email)) {
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new ResourceNotFound("User not found"));
-
-            user.setLastLoginAt(LocalDateTime.now());
-            userRepository.save(user);
-
             expiration = jwtService.extractExpiration(token);
         } else {
             throw new UnauthorizedException("Invalid or expired JWT token");

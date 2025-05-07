@@ -16,10 +16,9 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email",nullable = false, unique = true)
     private String email;
 
     @Column(name = "password")
@@ -47,7 +46,8 @@ public class User {
     public User() {
     }
 
-   public User (String email, String password, Role roles, String username, Set<Accounts> account) {
+   public User (Long id,String email, String password, Role roles, String username, Set<Accounts> account) {
+        this.id=id;
         this.email = email;
         this.password = password;
         this.roles = roles;

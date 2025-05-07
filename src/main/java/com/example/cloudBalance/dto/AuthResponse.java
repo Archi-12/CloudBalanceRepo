@@ -11,16 +11,12 @@ public class AuthResponse {
 
         private String token;
         private String email;
-        private String role;
-        private String username;
 
-        public AuthResponse(String token, String email, String role, String username) {
+        public AuthResponse(String token, String email) {
             this.token = token;
             this.email = email;
-            this.role = role;
-            this.username = username;
-        }
 
+        }
 }
 
 

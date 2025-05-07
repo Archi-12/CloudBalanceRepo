@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-@Getter
-@Setter
+
 public class UserResponse {
+    private Long id;
     private String email;
     private String username;
     private String roles;
@@ -20,7 +20,8 @@ public class UserResponse {
 
     public UserResponse() {}
 
-    public UserResponse(String email, String username, String roleName,LocalDateTime lastLoginAt, Set<Accounts> accounts) {
+    public UserResponse(Long id,String email, String username, String roleName,LocalDateTime lastLoginAt, Set<Accounts> accounts) {
+        this.id=id;
         this.email = email;
         this.username = username;
         this.roles = roleName;
