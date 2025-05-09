@@ -4,10 +4,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { LogoutUser } from "../config/Logoutuser";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import SwitchUserDropdown from "./SwitchUserDropdown";
+import { switchBack } from "../redux/userSlice";
 
 export default function Navbar() {
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showSwitchDropdown, setShowSwitchDropdown] = useState(false);
+  const userDropdownRef = useRef(null);
+  const switchDropdownRef = useRef(null);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -20,21 +25,35 @@ export default function Navbar() {
     navigate("/home");
   };
 
-  const toggleDropdown = () => {
-    setShowDropdown((prev) => !prev);
+  const toggleUserDropdown = () => {
+    setShowUserDropdown((prev) => !prev);
+    setShowSwitchDropdown(false);
   };
 
-  // Close dropdown when clicking outside
+  const toggleSwitchDropdown = () => {
+    setShowSwitchDropdown((prev) => !prev);
+    setShowUserDropdown(false);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target)
+      ) {
+        setShowUserDropdown(false);
+      }
+
+      if (
+        switchDropdownRef.current &&
+        !switchDropdownRef.current.contains(event.target)
+      ) {
+        setShowSwitchDropdown(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -47,18 +66,36 @@ export default function Navbar() {
           onClick={handleImageClick}
         />
       </div>
+
       <div className="nav-icons">
-        <div className="user-icon-container" ref={dropdownRef}>
+        {user.role === "ADMIN" && (
+          <div className="switch-user-container" ref={switchDropdownRef}>
+            <button onClick={toggleSwitchDropdown}>Switch User</button>
+            {showSwitchDropdown && (
+              <SwitchUserDropdown
+                onClose={() => setShowSwitchDropdown(false)}
+              />
+            )}
+          </div>
+        )}
+
+        <div className="user-icon-container" ref={userDropdownRef}>
           <FaUserCircle
             size={32}
             style={{ cursor: "pointer" }}
-            onClick={toggleDropdown}
+            onClick={toggleUserDropdown}
           />
-          {showDropdown && (
+          {showUserDropdown && (
             <div className="user-dropdown">
               <p>Email: {user.email}</p>
               <p>Role: {user.role}</p>
-              <button onClick={handleLogout}>Logout</button>
+              {user.originalUser ? (
+                <button onClick={() => dispatch(switchBack())}>
+                  Switch Back to Admin
+                </button>
+              ) : (
+                <button onClick={handleLogout}>Logout</button>
+              )}
             </div>
           )}
         </div>

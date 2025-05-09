@@ -23,8 +23,15 @@ const userSlice = createSlice({
       state.email = null;
       state.role = null;
     },
+    switchUser(state, action) {
+      state.id = action.payload.id;
+      state.username = action.payload.username;
+      state.email = action.payload.email;
+      state.role = action.payload.role;
+    },
   },
 });
 
-export const { setUser, logoutUser } = userSlice.actions;
+export const { setUser, logoutUser, switchUser, switchBack } =
+  userSlice.actions;
 export default userSlice.reducer;

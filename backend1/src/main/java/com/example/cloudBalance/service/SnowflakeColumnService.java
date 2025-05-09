@@ -41,7 +41,7 @@ public class SnowflakeColumnService {
         String actualName = optionalColumn.get().getActualName();
 
         String query = String.format(
-                "SELECT DISTINCT \"%s\" FROM cost_explorer WHERE \"%s\" IS NOT NULL LIMIT 1000",
+                "SELECT DISTINCT \"%s\" FROM cost_explorer WHERE \"%s\" IS NOT NULL LIMIT 500",
                 actualName, actualName
         );
 

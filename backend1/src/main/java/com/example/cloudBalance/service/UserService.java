@@ -4,6 +4,7 @@ import com.example.cloudBalance.authComp.JwtService;
 import com.example.cloudBalance.dto.RegisterRequest;
 import com.example.cloudBalance.dto.UserResponse;
 import com.example.cloudBalance.entity.Accounts;
+import com.example.cloudBalance.entity.ERole;
 import com.example.cloudBalance.entity.Role;
 import com.example.cloudBalance.entity.User;
 import com.example.cloudBalance.exception.ConflictException;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -93,6 +95,15 @@ public class UserService {
         return dto;
     }
 
+    public List<RegisterRequest> getAllCustomers() {
+        List<User> customers = userRepository.findByRoles(ERole.CUSTOMER)
+                .orElseThrow(() -> new ResourceNotFound("No customers found with role: CUSTOMER"));
+        return customers.stream()
+                .map(UserMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
     @Transactional
     public UserResponse updateUser(Long id, RegisterRequest updatedRequest) {
         User existingUser = userRepository.findById(id)
@@ -142,16 +153,6 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("User not found with id: " + id));
         return user.getAccount();
-    }
-
-    public String switchToUser(Long id, Authentication authentication) {
-        // Validate the customer exists
-        User customer = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFound("Customer not found"));
-        if (!customer.getRoles().getName().equals("CUSTOMER")) {
-            throw new UnauthorizedException("Cannot switch to a non-customer user");
-        }
-        return jwtTokenProvider.generateToken(customer.getEmail(), customer.getRoles().getName().name());
     }
 
 }

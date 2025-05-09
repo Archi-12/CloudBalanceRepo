@@ -70,19 +70,18 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Set<Accounts>>> getUserAccounts(@PathVariable Long id) {
         Set<Accounts> accounts = userService.getUserAccounts(id);
         ApiResponse<Set<Accounts>> response = new ApiResponse<>(200, "User accounts fetched successfully", accounts);
         return ResponseEntity.ok(response);
     }
-
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/switch/{id}")
-    public ResponseEntity<ApiResponse<String>> switchToUser(@PathVariable Long id, Authentication authentication) {
-        String customerToken = userService.switchToUser(id ,authentication);
-        ApiResponse<String> response = new ApiResponse<>(200, "Switched to user successfully", customerToken);
+    @GetMapping("customers")
+    public ResponseEntity<ApiResponse<List<RegisterRequest>>> getAllCustomers() {
+        List<RegisterRequest> customers = userService.getAllCustomers();
+        ApiResponse<List<RegisterRequest>> response = new ApiResponse<>(200, "Customers fetched successfully", customers);
         return ResponseEntity.ok(response);
     }
 

@@ -25,6 +25,78 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
+.user-dropdown {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  position: absolute;
+  right: 10px;
+  z-index: 1000;
+  min-width: 200px;
+}
+
+.user-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.user-dropdown li {
+  padding: 4px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.user-dropdown li:last-child {
+  border-bottom: none;
+}
+/* Container for switch user dropdown */
+.switch-user-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Shared dropdown style */
+.user-dropdown {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 40px;
+  right: 0;
+  z-index: 1000;
+  min-width: 220px;
+  font-size: 14px;
+}
+
+/* Specific styling for the username list */
+.user-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* List item styling */
+.user-dropdown li {
+  padding: 8px 6px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+/* Remove border on last item */
+.user-dropdown li:last-child {
+  border-bottom: none;
+}
+
+/* Hover effect (optional if clickable) */
+.user-dropdown li:hover {
+  background-color: #f5f5f5;
+  cursor: default; /* change to pointer if you want to make items clickable later */
+}
+
 .logo {
   width: 180px;
   cursor: pointer;

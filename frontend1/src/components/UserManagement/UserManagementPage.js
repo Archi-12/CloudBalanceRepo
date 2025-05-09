@@ -43,7 +43,9 @@ function UserManagementPage() {
         <Sidebar user={user} sidebarItems={SidebarItems} />
         <section className="dashboard-content">
           <h2>User Management</h2>
-          <button onClick={handleAdd}>Add User</button>
+          <button onClick={handleAdd} disabled={user?.role === "READ_ONLY"}>
+            Add User
+          </button>
           <UserTable users={users} onEdit={handleEdit} />
         </section>
       </div>
